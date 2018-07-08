@@ -10,6 +10,10 @@ julia:
 env:
   - JULIA_CPU_CORES=2 # travis vm only has 2 cores, but Julia reads the number of hardware cores
 
+before_install:
+  - sudo apt-get update 
+  - sudo apt-get install -y tesseract-ocr
+
 notifications:
   email:
     on_success: always
