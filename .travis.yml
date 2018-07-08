@@ -1,0 +1,25 @@
+# Documentation: http://docs.travis-ci.com/user/languages/julia/
+language: julia
+
+os:
+  - linux
+
+julia:
+  - 0.7
+
+env:
+  - JULIA_CPU_CORES=2 # travis vm only has 2 cores, but Julia reads the number of hardware cores
+
+notifications:
+  email:
+    on_success: always
+    on_failure: never
+
+script:
+  - julia -e 'Pkg.clone(pwd()); Pkg.build("OCReract")'
+  - julia test/runtests.jl
+
+# uncomment the following lines to override the default test script
+#script:
+#  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
+#  - julia -e 'Pkg.clone(pwd()); Pkg.build("OCReract"); Pkg.test("OCReract"; coverage=true)'
