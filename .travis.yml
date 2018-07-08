@@ -5,7 +5,7 @@ os:
   - linux
 
 julia:
-  - 0.7
+  - 0.6
 
 env:
   - JULIA_CPU_CORES=2 # travis vm only has 2 cores, but Julia reads the number of hardware cores
