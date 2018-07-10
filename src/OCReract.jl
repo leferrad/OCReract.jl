@@ -6,7 +6,7 @@ A wrapper ...
 
 module OCReract
 
-export run_tesseract
+export run_tesseract, run_and_get_output
 
 include("tesseract.jl")
 

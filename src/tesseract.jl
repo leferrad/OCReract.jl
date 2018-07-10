@@ -2,6 +2,7 @@ __precompile__()
 
 import FileIO
 using Memento, Images
+using Base.Filesystem
 
 #const logger = Memento.config("debug", fmt="[{level} | {name}]: {msg}")
 logger = getlogger(current_module())
@@ -89,7 +90,7 @@ Wrapper function to run Tesseract for a image stored in disk, and write the resu
 
 """
 function run_tesseract(input_path::String, output_path::String; lang=nothing, psm=3, oem=1, nice=0)
-    # TODO: user-words, user-patterns
+    # TODO: allow to handle user-words, user-patterns
     if !isfile(input_path)
         error(logger, "Input path '$input_path' doesn't exist!")
     end
@@ -122,9 +123,7 @@ function run_tesseract(input_path::String, output_path::String; lang=nothing, ps
     try
         run(`$(split(cmd))`)
     catch e
-        info(logger, "UUPS! $e")
-    finally
-        info(logger, "Cleaning..")
+        info(logger, "Error ocurred while running Tesseract! $e")
     end
 
     return true
@@ -157,19 +156,32 @@ julia> a = 1
 ```    
 """
 function run_and_get_output(image; lang=nothing, psm=3, oem=1)
-    
-    input_path, output_path = get_tmp_path(extension=".png"), get_tmp_path(extension="")
 
     # TODO: handle image type
+    input_path = get_tmp_path(extension=".png")  # PNG image resulting
+    output_path = get_tmp_path(extension="")  # No extension since we need to set the basename
 
+    # Save image into disk to be handled by Tesseract
     FileIO.save(input_path, image)
 
+    # Run Tesseract!
     run_tesseract(input_path, output_path, lang=lang, psm=psm, oem=oem)
 
+    # Read output into a string
+    output_filename = output_path*".txt"
     txt = ""
 
-    open(output_path*".txt", "r") do f
+    open(output_filename, "r") do f
         txt = readstring(f)
+    end
+
+    # Now remove these temporary files generated
+    try
+        info(logger, "Removing temporary files generated...")
+        rm(input_path)
+        rm(output_filename)
+    catch e
+        warn(logger, "Error ocurred while removing temorary files! $e")
     end
 
     return txt
