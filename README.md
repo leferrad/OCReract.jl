@@ -17,7 +17,7 @@ Pkg.clone("https://github.com/leferrad/OCReract.jl.git")
 
 ## Testing
 
-In a Julia session, run `Pkg.test("OCReract")`.
+In a Julia session, run `Pkg.test("OCReract", coverage=true)`, or just run `julia --code-coverage=all --inline=no test/runtests.jl`.
 
 ## Next steps
 - Make a Dockerfile

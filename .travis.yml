@@ -21,7 +21,7 @@ notifications:
 
 script:
   - julia -e 'Pkg.clone(pwd()); Pkg.build("OCReract")'
-  - julia --code-coverage test/runtests.jl
+  - julia --code-coverage=all --inline=no test/runtests.jl
 
 # uncomment the following lines to override the default test script
 #script:

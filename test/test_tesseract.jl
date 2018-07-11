@@ -5,8 +5,6 @@ import Images
 using OCReract
 using Base.Test
 
-module TestOCReract
-
 path_to_test_img = "$(pwd())/test/files/testocr.png"
 
 function test_run_tesseract()
@@ -41,6 +39,4 @@ Base.Test.@testset "RunTesseract" begin
 
     test_run_tesseract()
     test_run_and_get_output()
-end
-
 end
