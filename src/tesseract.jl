@@ -1,12 +1,14 @@
 __precompile__()
 
 import FileIO
-using Memento, Images
+using Logging, Images
 using Base.Filesystem
 
 #const logger = Memento.config("debug", fmt="[{level} | {name}]: {msg}")
-logger = getlogger(current_module())
-setlevel!(logger, "debug")
+#logger = getlogger(current_module())
+#setlevel!(logger, "debug")
+
+Logging.configure(level=DEBUG)
 
 export run_and_get_output, run_tesseract
 
@@ -18,9 +20,9 @@ oem_valid_range = range(0, 4)
 function check_tesseract_installed()
     try
         readstring(`$command --version`);
-        info(logger, "Tesseract is properly installed!")
+        info("Tesseract is properly installed!")
     catch
-        error(logger, "Tesseract is not properly installed!")
+        error("Tesseract is not properly installed!")
     end
 end 
 
@@ -34,7 +36,7 @@ function get_tesseract_version()
     return version
 end
 
-info(logger, "Using Tesseract version: $(get_tesseract_version())")
+info("Using Tesseract version: $(get_tesseract_version())")
 
 function image_to_string(image; lang="eng", config="", nice=0, boxes=false)
     nothing
@@ -92,11 +94,11 @@ Wrapper function to run Tesseract for a image stored in disk, and write the resu
 function run_tesseract(input_path::String, output_path::String; lang=nothing, psm=3, oem=1, nice=0)
     # TODO: allow to handle user-words, user-patterns
     if !isfile(input_path)
-        error(logger, "Input path '$input_path' doesn't exist!")
+        error("Input path '$input_path' doesn't exist!")
     end
     
     if isfile(output_path)
-        warn(logger, "Output path '$output_path' already exist!")
+        warn("Output path '$output_path' already exist!")
     end
 
     cmd = "tesseract $input_path $output_path"
@@ -107,23 +109,23 @@ function run_tesseract(input_path::String, output_path::String; lang=nothing, ps
 
     if ! (psm in psm_valid_range)
         psm = 3
-        warn(logger, "PSM parameter not in valid range: [$(string(psm_valid_range))]. Changing to default value: PSM=$psm")
+        warn("PSM parameter not in valid range: [$(string(psm_valid_range))]. Changing to default value: PSM=$psm")
     end
 
 
     if ! (oem in oem_valid_range)
         oem = 1
-        warn(logger, "OEM parameter not in valid range: [$(string(oem_valid_range))]. Changing to default value: OEM=$oem")
+        warn("OEM parameter not in valid range: [$(string(oem_valid_range))]. Changing to default value: OEM=$oem")
     end
 
     cmd = join([cmd, "--oem $oem --psm $psm"], " ")
 
-    debug(logger, "Running command '$cmd' ...")
+    debug("Running command '$cmd' ...")
 
     try
         run(`$(split(cmd))`)
     catch e
-        info(logger, "Error ocurred while running Tesseract! $e")
+        info("Error ocurred while running Tesseract! $e")
     end
 
     return true
@@ -177,11 +179,11 @@ function run_and_get_output(image; lang=nothing, psm=3, oem=1)
 
     # Now remove these temporary files generated
     try
-        info(logger, "Removing temporary files generated...")
+        info("Removing temporary files generated...")
         rm(input_path)
         rm(output_filename)
     catch e
-        warn(logger, "Error ocurred while removing temorary files! $e")
+        warn("Error ocurred while removing temporary files! $e")
     end
 
     return txt

@@ -1,6 +1,5 @@
 julia 0.6
-Memento
+Logging
 FileIO
 Images
 ImageMagick
-Coverage
