@@ -1,15 +1,11 @@
 __precompile__()
 
-import FileIO
-using Logging, Images
 using Base.Filesystem
+import FileIO
+using Images
+using Logging
 using Random
 
-#const logger = Memento.config("debug", fmt="[{level} | {name}]: {msg}")
-#logger = getlogger(current_module())
-#setlevel!(logger, "debug")
-
-#Logging.configure(level=DEBUG)
 
 export run_and_get_output, run_tesseract
 
@@ -180,7 +176,7 @@ function run_and_get_output(image; lang=nothing, psm=3, oem=1)
 
     # Now remove these temporary files generated
     try
-        @info "Removing temporary files generated..."
+        @debug "Removing temporary files generated..."
         rm(input_path)
         rm(output_filename)
     catch e
