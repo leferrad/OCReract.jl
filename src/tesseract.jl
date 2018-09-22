@@ -3,6 +3,7 @@ __precompile__()
 import FileIO
 using Logging, Images
 using Base.Filesystem
+using Random
 
 #const logger = Memento.config("debug", fmt="[{level} | {name}]: {msg}")
 #logger = getlogger(current_module())
@@ -14,17 +15,14 @@ export run_and_get_output, run_tesseract
 
 # Tesseract settings
 command = "tesseract"
-psm_valid_range = 0:14# range(0, 14)
-oem_valid_range = 0:4 #range(0, 4)
+psm_valid_range = 0:14
+oem_valid_range = 0:4
 
 function check_tesseract_installed()
     try
-        #readstring(`$command --version`);
         read(`$command --version`, String);
-        #info("Tesseract is properly installed!")
         @info "Tesseract is properly installed!"
     catch
-        # error("Tesseract is not properly installed!")
         @error "Tesseract is not properly installed!"
     end
 end 
