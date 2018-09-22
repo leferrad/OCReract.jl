@@ -2,7 +2,8 @@ import Images
 using OCReract
 using Test
 
-path_to_test_img = "$(pwd())/test/files/testocr.png"
+pkg_path = abspath(joinpath(dirname(pathof(OCReract)), ".."))
+path_to_test_img = "$(pkg_path)/test/files/testocr.png"
 
 function test_run_tesseract()
     # TODO: read this expected text from a text file in test/files
