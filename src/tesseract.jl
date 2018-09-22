@@ -175,7 +175,7 @@ function run_and_get_output(image; lang=nothing, psm=3, oem=1)
     txt = ""
 
     open(output_filename, "r") do f
-        txt = read(f)
+        txt = read(f, String)
     end
 
     # Now remove these temporary files generated
