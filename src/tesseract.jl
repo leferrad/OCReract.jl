@@ -123,7 +123,7 @@ function run_tesseract(input_path::String, output_path::String; lang=nothing, ps
 
     cmd = join([cmd, "--oem $oem --psm $psm"], " ")
 
-    debug("Running command '$cmd' ...")
+    @debug "Running command '$cmd' ..."
 
     try
         run(`$(split(cmd))`)
