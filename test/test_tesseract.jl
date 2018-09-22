@@ -3,7 +3,8 @@ include("../src/OCReract.jl")
 import Images
 
 using OCReract
-using Base.Test
+#using Base.Test
+using Test
 
 path_to_test_img = "$(pwd())/test/files/testocr.png"
 
@@ -18,7 +19,7 @@ function test_run_tesseract()
         result_txt = readstring(f)
     end
 
-    Base.Test.@test strip(expected_text) == strip(result_txt)
+    Test.@test strip(expected_text) == strip(result_txt)
 
 end
 
@@ -28,11 +29,11 @@ function test_run_and_get_output()
     
     result_txt = run_and_get_output(Images.load(path_to_test_img))
 
-    Base.Test.@test strip(expected_text) == strip(result_txt)
+    Test.@test strip(expected_text) == strip(result_txt)
 
 end
 
-Base.Test.@testset "RunTesseract" begin
+Test.@testset "RunTesseract" begin
     # TODO: avoid this inside the testset (so far, not working without these imports here)
     import Images
     using OCReract

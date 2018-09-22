@@ -8,21 +8,24 @@ using Base.Filesystem
 #logger = getlogger(current_module())
 #setlevel!(logger, "debug")
 
-Logging.configure(level=DEBUG)
+#Logging.configure(level=DEBUG)
 
 export run_and_get_output, run_tesseract
 
 # Tesseract settings
 command = "tesseract"
-psm_valid_range = range(0, 14)
-oem_valid_range = range(0, 4)
+psm_valid_range = 0:14# range(0, 14)
+oem_valid_range = 0:4 #range(0, 4)
 
 function check_tesseract_installed()
     try
-        readstring(`$command --version`);
-        info("Tesseract is properly installed!")
+        #readstring(`$command --version`);
+        read(`$command --version`, String);
+        #info("Tesseract is properly installed!")
+        @info "Tesseract is properly installed!"
     catch
-        error("Tesseract is not properly installed!")
+        # error("Tesseract is not properly installed!")
+        @error "Tesseract is not properly installed!"
     end
 end 
 
@@ -31,12 +34,12 @@ check_tesseract_installed()
 # TODO: function to set command for executing tesseract? 
 
 function get_tesseract_version()
-    info = readstring(`tesseract --version`)
+    info = read(`$command --version`, String)
     version = split(info, "\n")[1]
     return version
 end
 
-info("Using Tesseract version: $(get_tesseract_version())")
+@info "Using Tesseract version: $(get_tesseract_version())"
 
 function image_to_string(image; lang="eng", config="", nice=0, boxes=false)
     nothing
@@ -94,11 +97,11 @@ Wrapper function to run Tesseract for a image stored in disk, and write the resu
 function run_tesseract(input_path::String, output_path::String; lang=nothing, psm=3, oem=1, nice=0)
     # TODO: allow to handle user-words, user-patterns
     if !isfile(input_path)
-        error("Input path '$input_path' doesn't exist!")
+        @error "Input path '$input_path' doesn't exist!"
     end
     
     if isfile(output_path)
-        warn("Output path '$output_path' already exist!")
+        @warn "Output path '$output_path' already exist!"
     end
 
     cmd = "tesseract $input_path $output_path"
@@ -109,13 +112,13 @@ function run_tesseract(input_path::String, output_path::String; lang=nothing, ps
 
     if ! (psm in psm_valid_range)
         psm = 3
-        warn("PSM parameter not in valid range: [$(string(psm_valid_range))]. Changing to default value: PSM=$psm")
+        @warn "PSM parameter not in valid range: [$(string(psm_valid_range))]. Changing to default value: PSM=$psm"
     end
 
 
     if ! (oem in oem_valid_range)
         oem = 1
-        warn("OEM parameter not in valid range: [$(string(oem_valid_range))]. Changing to default value: OEM=$oem")
+        @warn "OEM parameter not in valid range: [$(string(oem_valid_range))]. Changing to default value: OEM=$oem"
     end
 
     cmd = join([cmd, "--oem $oem --psm $psm"], " ")
@@ -125,7 +128,7 @@ function run_tesseract(input_path::String, output_path::String; lang=nothing, ps
     try
         run(`$(split(cmd))`)
     catch e
-        info("Error ocurred while running Tesseract! $e")
+        @info "Error ocurred while running Tesseract! $e"
     end
 
     return true
@@ -174,16 +177,16 @@ function run_and_get_output(image; lang=nothing, psm=3, oem=1)
     txt = ""
 
     open(output_filename, "r") do f
-        txt = readstring(f)
+        txt = read(f)
     end
 
     # Now remove these temporary files generated
     try
-        info("Removing temporary files generated...")
+        @info "Removing temporary files generated..."
         rm(input_path)
         rm(output_filename)
     catch e
-        warn("Error ocurred while removing temporary files! $e")
+        @warn "Error ocurred while removing temporary files! $e"
     end
 
     return txt
