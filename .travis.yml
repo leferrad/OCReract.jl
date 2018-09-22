@@ -4,6 +4,8 @@ language: julia
 os:
   - linux
 
+dist: trusty  # for a more recent ImageMagick
+
 julia:
   - 1.0
 
@@ -20,13 +22,13 @@ notifications:
     on_failure: never
 
 script:
-  - julia -e 'using Pkg; Pkg.clone(pwd()); Pkg.build("OCReract")'
+  - julia -e 'using InteractiveUtils; versioninfo(); import Pkg; Pkg.clone(pwd()); Pkg.build("OCReract")'
   - julia --code-coverage=all --inline=no test/runtests.jl
 
 # uncomment the following lines to override the default test script
 #script:
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-#  - julia -e 'Pkg.clone(pwd()); Pkg.build("OCReract"); Pkg.test("OCReract"; coverage=true)'
+#  - julia -e 'using InteractiveUtils; versioninfo(); import Pkg; Pkg.clone(pwd()); Pkg.build("OCReract"); Pkg.test("OCReract"; coverage=true)'
 
 after_success:
-- julia -e 'using Pkg; cd(Pkg.dir("OCReract")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
+- julia -e 'import Pkg; cd(Pkg.dir("OCReract")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(process_folder())'
