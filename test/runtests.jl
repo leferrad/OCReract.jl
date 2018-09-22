@@ -1,5 +1,5 @@
-using Base.Test
+using Test
 
-@testset "OCReract" begin
+@testset "OCReractTest" begin
     include("test_tesseract.jl")
 end
