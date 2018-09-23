@@ -6,8 +6,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/leferrad/OCReract.jl/badge.svg?branch=master)](https://coveralls.io/github/leferrad/OCReract.jl?branch=master)
 [![Join the chat at https://gitter.im/OCReract.jl](https://badges.gitter.im/OCReract.jl.svg)](https://gitter.im/OCReract-jl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-> NOTE: still in development
-
 Nowadays, this library only supports Julia v1.0.
 
 ## Installation
