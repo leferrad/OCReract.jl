@@ -4,6 +4,7 @@
 
 [![Build Status](https://travis-ci.org/leferrad/OCReract.jl.svg?branch=master)](https://travis-ci.org/leferrad/OCReract.jl)
 [![Coverage Status](https://coveralls.io/repos/github/leferrad/OCReract.jl/badge.svg?branch=master)](https://coveralls.io/github/leferrad/OCReract.jl?branch=master)
+[![codecov](https://codecov.io/gh/leferrad/OCReract.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/leferrad/OCReract.jl)
 [![Join the chat at https://gitter.im/OCReract.jl](https://badges.gitter.im/OCReract.jl.svg)](https://gitter.im/OCReract-jl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Nowadays, this library only supports Julia v1.0.
