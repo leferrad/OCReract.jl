@@ -89,10 +89,13 @@ function run_tesseract(input_path::String, output_path::String; lang=nothing, ps
     # TODO: allow to handle user-words, user-patterns
     if !isfile(input_path)
         @error "Input path '$input_path' doesn't exist!"
+        return false
     end
     
-    if isfile(output_path)
-        @warn "Output path '$output_path' already exist!"
+    output_file = output_path*".txt" 
+
+    if isfile(output_file)
+        @warn "Output path '$output_file' already exists!"
     end
 
     cmd = "tesseract $input_path $output_path"
