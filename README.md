@@ -3,6 +3,7 @@
 *A simple Julia wrapper for Tesseract OCR*
 
 [![Build Status](https://travis-ci.org/leferrad/OCReract.jl.svg?branch=master)](https://travis-ci.org/leferrad/OCReract.jl)
+[![Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://leferrad.github.io/OCReract.jl/dev)
 [![Coverage Status](https://codecov.io/gh/leferrad/OCReract.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/leferrad/OCReract.jl)
 [![Join the chat at https://gitter.im/OCReract.jl](https://badges.gitter.im/OCReract.jl.svg)](https://gitter.im/OCReract-jl?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -15,7 +16,7 @@ pkg> add https://github.com/leferrad/OCReract.jl
 
 ## Usage
 
-This is a simple example of usage. For more details check the [Documentation]().
+This is a simple example of usage. For more details check the [Documentation](https://leferrad.github.io/OCReract.jl/dev).
 
 ```julia
 julia> using Images
