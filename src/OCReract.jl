@@ -1,9 +1,7 @@
-__precompile__()
-
 module OCReract
 
-export 
-    run_tesseract, 
+export
+    run_tesseract,
     run_and_get_output
 
 include("tesseract.jl")
@@ -15,8 +13,8 @@ Here, a simple example of usage:
 
 # Example
 ```julia-repl
-julia> using Images;
-julia> using OCReract;
+julia> using Images
+julia> using OCReract
 julia> img_path = "/path/to/img.png";
 julia> img = Images.load(img_path);
 julia> res_text = run_and_get_output(img, psm=3, oem=1);
