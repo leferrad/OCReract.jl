@@ -8,6 +8,7 @@ dist: trusty  # for a more recent ImageMagick
 
 julia:
   - 1.0
+  - 1.4
 
 env:
   - JULIA_CPU_CORES=2 # travis vm only has 2 cores, but Julia reads the number of hardware cores
