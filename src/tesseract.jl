@@ -3,7 +3,6 @@ using Images
 using Logging
 
 export
-    run_and_get_output,
     run_tesseract
 
 # Tesseract settings
@@ -23,8 +22,6 @@ end
 
 check_tesseract_installed()
 
-# TODO: function to set command for executing tesseract?
-
 """Util to get version of Tesseract installed"""
 function get_tesseract_version()
     info = read(`$command --version`, String)
@@ -43,37 +40,37 @@ function image_to_osd(image; lang="eng", config="", nice=0, boxes=false) end
 """
     run_tesseract(args...; kwargs...) -> Bool
 
-Wrapper function to run Tesseract for a image stored in disk,
+Wrapper function to run Tesseract over a image stored in disk,
     and write the results in a given path.
-Errors / Warnings are reported through logging, so no exceptions are thrown.
+Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
 
 # Arguments
-- `input_path::String`: Path to the image to be OCRed
-- `output_path::String`: Path to the text result to be stored
+- `input_path::String`: Path to the image to be processed
+- `output_path::String`: Path to the text result to be written
 
 # Keywords
 - `lang::Union{String, Nothing}` Language to be configured in Tesseract (optional).
 - `psm::Integer`: Page segmentation modes (PSM):
-    0.    Orientation and script detection (OSD) only.
-    1.    Automatic page segmentation with OSD.
-    2.    Automatic page segmentation, but no OSD, or OCR.
-    3.    Fully automatic page segmentation, but no OSD. (Default)
-    4.    Assume a single column of text of variable sizes.
-    5.    Assume a single uniform block of vertically aligned text.
-    6.    Assume a single uniform block of text.
-    7.    Treat the image as a single text line.
-    8.    Treat the image as a single word.
-    9.    Treat the image as a single word in a circle.
-    10.    Treat the image as a single character.
-    11.    Sparse text. Find as much text as possible in no particular order.
-    12.    Sparse text with OSD.
-    13.    Raw line. Treat the image as a single text line,
+    - `psm=0`:   Orientation and script detection (OSD) only.
+    - `psm=1`:   Automatic page segmentation with OSD.
+    - `psm=2`:   Automatic page segmentation, but no OSD, or OCR.
+    - `psm=3`:   Fully automatic page segmentation, but no OSD. (Default)
+    - `psm=4`:   Assume a single column of text of variable sizes.
+    - `psm=5`:   Assume a single uniform block of vertically aligned text.
+    - `psm=6`:   Assume a single uniform block of text.
+    - `psm=7`:   Treat the image as a single text line.
+    - `psm=8`:   Treat the image as a single word.
+    - `psm=9`:   Treat the image as a single word in a circle.
+    - `psm=10`:  Treat the image as a single character.
+    - `psm=11`:  Sparse text. Find as much text as possible in no particular order.
+    - `psm=12`:  Sparse text with OSD.
+    - `psm=13`:  Raw line. Treat the image as a single text line,
         bypassing hacks that are Tesseract-specific.
 - `oem::Integer`: OCR Engine modes (OEM):
-    0.    Legacy engine only.
-    1.    Neural nets LSTM engine only. (Default)
-    2.    Legacy + LSTM engines.
-    3.    Default, based on what is available.
+    - `oem=0`:   Legacy engine only.
+    - `oem=1`:   Neural nets LSTM engine only. (Default)
+    - `oem=2`:   Legacy + LSTM engines.
+    - `oem=3`:   Default, based on what is available.
 
 # Returns
 - `Bool`: indicating whether execution was successful or not
@@ -82,7 +79,7 @@ Errors / Warnings are reported through logging, so no exceptions are thrown.
 ```julia-repl
 julia> using OCReract;
 julia> img_path = "/path/to/img.png";
-julia> out_path = "/tmp/tesseract_result";
+julia> out_path = "/tmp/tesseract_result.txt";
 julia> run_tesseract(img_path, out_path, psm=3, oem=1)
 ```
 
@@ -100,11 +97,8 @@ function run_tesseract(
         return false
     end
 
-    # NOTE: adding .txt at the end of filename since tesseract ALWAYS add this suffix
-    output_file = output_path*".txt"
-
-    if isfile(output_file)
-        @warn "Output path '$output_file' already exists!"
+    if isfile(output_path)
+        @warn "Output path '$output_path' already exists!"
     end
 
     cmd = "tesseract $input_path $output_path"
@@ -116,66 +110,73 @@ function run_tesseract(
     if !(psm in psm_valid_range)
         psm = 3
         @warn "PSM parameter not in valid range: [$(string(psm_valid_range))]. "*
-              "Changing to default value: PSM=$psm"
+              "Changing to default value: psm=$psm"
     end
-
 
     if !(oem in oem_valid_range)
         oem = 1
         @warn "OEM parameter not in valid range: [$(string(oem_valid_range))]. "*
-              "Changing to default value: OEM=$oem"
+              "Changing to default value: oem=$oem"
     end
 
     cmd = join([cmd, "--oem $oem --psm $psm"], " ")
-
     @debug "Running command '$cmd' ..."
 
     try
         run(`$(split(cmd))`)
     catch e
-        @info "Error ocurred while running Tesseract! $e"
+        @error "Error ocurred while running Tesseract! $e"
         return false
     end
 
-    return true
+    # NOTE: tesseract ALWAYS add a suffix ".txt" to the result
+    # so, rename the resulting file to call it as the user defined
+    output_file = output_path*".txt"
+    try
+        mv(output_file, output_path, force=true)
+    catch e
+        # At least, inform that to the user
+        @warn "Result was stored in '$output_file'"
+    end
 
+    return true
 end
 
 """
-    run_and_get_output(args...) -> String
+    run_tesseract(args...; kwargs...) -> String
 
-Function to run Tesseract over an image in memory, and get the results in a string.
-Errors / Warnings are reported through logging, so no exceptions are thrown.
+Function to run Tesseract over an image in memory, and get the results in a `String`.
+Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
 
 # Arguments
-- `ìmage`: Image to be processed, in a format compatible with `Images` module.
+- `image`: Image to be processed, in a format compatible with `Images` module.
 
 # Keywords
 - `lang::Union{String, Nothing}` Language to be configured in Tesseract (optional)
 - `psm::Integer`: Page segmentation modes (PSM):
-    0.    Orientation and script detection (OSD) only.
-    1.    Automatic page segmentation with OSD.
-    2.    Automatic page segmentation, but no OSD, or OCR.
-    3.    Fully automatic page segmentation, but no OSD. (Default)
-    4.    Assume a single column of text of variable sizes.
-    5.    Assume a single uniform block of vertically aligned text.
-    6.    Assume a single uniform block of text.
-    7.    Treat the image as a single text line.
-    8.    Treat the image as a single word.
-    9.    Treat the image as a single word in a circle.
-    10.    Treat the image as a single character.
-    11.    Sparse text. Find as much text as possible in no particular order.
-    12.    Sparse text with OSD.
-    13.    Raw line. Treat the image as a single text line,
+    - `psm=0`:   Orientation and script detection (OSD) only.
+    - `psm=1`:   Automatic page segmentation with OSD.
+    - `psm=2`:   Automatic page segmentation, but no OSD, or OCR.
+    - `psm=3`:   Fully automatic page segmentation, but no OSD. (Default)
+    - `psm=4`:   Assume a single column of text of variable sizes.
+    - `psm=5`:   Assume a single uniform block of vertically aligned text.
+    - `psm=6`:   Assume a single uniform block of text.
+    - `psm=7`:   Treat the image as a single text line.
+    - `psm=8`:   Treat the image as a single word.
+    - `psm=9`:   Treat the image as a single word in a circle.
+    - `psm=10`:  Treat the image as a single character.
+    - `psm=11`:  Sparse text. Find as much text as possible in no particular order.
+    - `psm=12`:  Sparse text with OSD.
+    - `psm=13`:  Raw line. Treat the image as a single text line,
         bypassing hacks that are Tesseract-specific.
 - `oem::Integer`: OCR Engine modes (OEM):
-    0.    Legacy engine only.
-    1.    Neural nets LSTM engine only. (Default)
-    2.    Legacy + LSTM engines.
-    3.    Default, based on what is available.
+    - `oem=0`:   Legacy engine only.
+    - `oem=1`:   Neural nets LSTM engine only. (Default)
+    - `oem=2`:   Legacy + LSTM engines.
+    - `oem=3`:   Default, based on what is available.
 
 # Returns
-- `String`: text extracted, empty string in case an error occurs
+- `String`: text extracted, or empty string in case an error occurs
 
 # Examples
 ```julia-repl
@@ -183,19 +184,18 @@ julia> using Images;
 julia> using OCReract;
 julia> img_path = "/path/to/img.png";
 julia> img = Images.load(img_path);
-julia> res_text = run_and_get_output(img, psm=3, oem=1);
-julia> println(res_text);
+julia> res_text = run_tesseract(img, psm=3, oem=1);
+julia> println(strip(res_text));
 ```
 """
-function run_and_get_output(
+function run_tesseract(
     image;
     lang::Union{String, Nothing}=nothing,
     psm::Integer=3,
     oem::Integer=1
 )
-    # TODO: handle image type
-    input_path = tempname() * ".png"  # PNG image resulting
-    output_path = tempname()  # No extension since we need to set the basename
+    input_path = tempname() * ".png"   # PNG image resulting
+    output_path = tempname() * ".txt"  # TXT file resulting
 
     # Save image into disk to be handled by Tesseract
     FileIO.save(input_path, image)
@@ -204,10 +204,8 @@ function run_and_get_output(
     run_tesseract(input_path, output_path, lang=lang, psm=psm, oem=oem)
 
     # Read output into a string
-    output_filename = output_path*".txt"
     txt = ""
-
-    open(output_filename, "r") do f
+    open(output_path, "r") do f
         txt = read(f, String)
     end
 
@@ -215,7 +213,7 @@ function run_and_get_output(
     try
         @debug "Removing temporary files generated..."
         rm(input_path)
-        rm(output_filename)
+        rm(output_path)
     catch e
         @warn "Error ocurred while removing temporary files! $e"
     end
