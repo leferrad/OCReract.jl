@@ -7,14 +7,15 @@ os:
 dist: trusty  # for a more recent ImageMagick
 
 julia:
-  - 1.0
+  # - 1.0
   - 1.4
 
 env:
   - JULIA_CPU_CORES=2 # travis vm only has 2 cores, but Julia reads the number of hardware cores
 
+sudo: required
 before_install:
-  - sudo apt-get update 
+  - sudo apt-get update
   - sudo apt-get install -y tesseract-ocr
 
 notifications:
@@ -24,8 +25,7 @@ notifications:
 
 script:
   - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia --color=yes -e 'using InteractiveUtils; versioninfo(); import Pkg; Pkg.clone(pwd()); Pkg.build("OCReract")'
-  - julia --color=yes -e 'import Pkg; Pkg.test("OCReract"; coverage=true)'
+  - julia --color=yes -e 'using Pkg; Pkg.build(); Pkg.test("OCReract"; coverage=true)'
 
 after_success:
   # push coverage results to Codecov
