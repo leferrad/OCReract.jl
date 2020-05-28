@@ -35,6 +35,9 @@ function test_run_tesseract()
     end
     @test strip(result_txt) == strip(TEST_ITEMS["simple"]["text"])
 
+    # Again to test warning about already existing output file
+    res = run_tesseract(TEST_ITEMS["simple"]["path"], path_to_res)
+    @test res == true
 end
 
 function test_run_and_get_output()
@@ -65,8 +68,6 @@ end
     # Normal run
     test_run_tesseract()
     # Run and get
-    test_run_and_get_output()
-    # Again to test warning about already existing output file
     test_run_and_get_output()
     # Test with non existent image
     test_path_exist()
