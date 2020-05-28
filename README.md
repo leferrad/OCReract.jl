@@ -11,7 +11,7 @@
 
 From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
 ```julia-repl
-pkg> add https://github.com/leferrad/OCReract.jl
+pkg> add OCReract
 ```
 
 ## Usage
