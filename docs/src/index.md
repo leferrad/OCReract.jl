@@ -9,7 +9,7 @@ OCReract is a simple Julia wrapper of the well-known OCR engine called [Tesserac
 
 It can be installed using the Julia package manager. From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
 ```julia-repl
-pkg> add https://github.com/leferrad/OCReract.jl
+pkg> add OCReract
 ```
 
 ## Usage
