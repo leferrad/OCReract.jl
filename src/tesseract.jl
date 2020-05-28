@@ -31,12 +31,6 @@ end
 
 @info "Using Tesseract version: $(get_tesseract_version())"
 
-"""To be implemented"""
-function image_to_boxes(image; lang="eng", config="", nice=0, boxes=false) end
-
-"""To be implemented"""
-function image_to_osd(image; lang="eng", config="", nice=0, boxes=false) end
-
 """
     run_tesseract(args...; kwargs...) -> Bool
 
