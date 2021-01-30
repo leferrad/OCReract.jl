@@ -65,6 +65,7 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
     - `oem=1`:   Neural nets LSTM engine only. (Default)
     - `oem=2`:   Legacy + LSTM engines.
     - `oem=3`:   Default, based on what is available.
+- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables 
 
 # Returns
 - `Bool`: indicating whether execution was successful or not
@@ -83,9 +84,10 @@ function run_tesseract(
     output_path::String;
     lang::Union{String, Nothing}=nothing,
     psm::Integer=3,
-    oem::Integer=1
+    oem::Integer=1,
+    kwargs...
 )
-    # TODO: allow to handle user-words, user-patterns
+    # Check arguments
     if !isfile(input_path)
         @error "Input path '$input_path' doesn't exist!"
         return false
@@ -93,12 +95,6 @@ function run_tesseract(
 
     if isfile(output_path)
         @warn "Output path '$output_path' already exists!"
-    end
-
-    cmd = "tesseract $input_path $output_path"
-
-    if lang !== nothing
-        cmd = join([cmd, "-l $lang"], " ")
     end
 
     if !(psm in psm_valid_range)
@@ -113,9 +109,25 @@ function run_tesseract(
               "Changing to default value: oem=$oem"
     end
 
-    cmd = join([cmd, "--oem $oem --psm $psm"], " ")
+    # Build command to execute
+    cmd = "tesseract $input_path $output_path"
+
+    # Add language if specified
+    if lang !== nothing
+        cmd = join([cmd, "-l $lang"], " ")
+    end
+
+    # Add config variables from kwargs
+    config_vars = ""
+    for (k, v) in kwargs
+        config_vars *= "-c $k=$v "
+    end
+
+    # Join arguments to final command
+    cmd = join([cmd, "--oem $oem", "--psm $psm", config_vars], " ")
     @debug "Running command '$cmd' ..."
 
+    # Run command
     try
         run(`$(split(cmd))`)
     catch e
@@ -168,6 +180,7 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
     - `oem=1`:   Neural nets LSTM engine only. (Default)
     - `oem=2`:   Legacy + LSTM engines.
     - `oem=3`:   Default, based on what is available.
+- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables
 
 # Returns
 - `String`: text extracted, or empty string in case an error occurs
@@ -186,7 +199,8 @@ function run_tesseract(
     image;
     lang::Union{String, Nothing}=nothing,
     psm::Integer=3,
-    oem::Integer=1
+    oem::Integer=1,
+    kwargs...
 )
     input_path = tempname() * ".png"   # PNG image resulting
     output_path = tempname() * ".txt"  # TXT file resulting
@@ -195,7 +209,7 @@ function run_tesseract(
     FileIO.save(input_path, image)
 
     # Run Tesseract!
-    run_tesseract(input_path, output_path, lang=lang, psm=psm, oem=oem)
+    run_tesseract(input_path, output_path, lang=lang, psm=psm, oem=oem, kwargs...)
 
     # Read output into a string
     txt = ""
