@@ -45,6 +45,11 @@ function test_run_and_get_output()
     @test strip(TEST_ITEMS["simple"]["text"]) == strip(result_txt)
 end
 
+function test_run_with_kwargs()
+    result_txt = run_tesseract(Images.load(TEST_ITEMS["simple"]["path"]), enable_noise_removal=1)
+    @test strip(TEST_ITEMS["noisy"]["text"]) == strip(result_txt)
+end
+
 function test_path_exist()
     res = run_tesseract("/tmp/not_existing_image.png", "/tmp/res")
     @test res == false
