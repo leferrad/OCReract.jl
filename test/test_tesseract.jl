@@ -46,7 +46,7 @@ function test_run_and_get_output()
 end
 
 function test_run_with_kwargs()
-    result_txt = run_tesseract(Images.load(TEST_ITEMS["simple"]["path"]), enable_noise_removal=1)
+    result_txt = run_tesseract(Images.load(TEST_ITEMS["noisy"]["path"]), enable_noise_removal=1)
     @test strip(TEST_ITEMS["noisy"]["text"]) == strip(result_txt)
 end
 
@@ -78,4 +78,6 @@ end
     test_path_exist()
     # Test with bad arguments
     test_bad_arguments()
+    # Test with kwargs
+    test_run_with_kwargs()
 end
