@@ -14,9 +14,8 @@ oem_valid_range = 0:4
 function check_tesseract_installed()
     try
         read(`$command --version`, String);
-        @info "Tesseract is properly installed!"
     catch IOError
-        @error "Tesseract is not properly installed!"
+        @error "Tesseract is not properly installed. Command $command not recognized"
     end
 end
 
@@ -65,7 +64,8 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
     - `oem=1`:   Neural nets LSTM engine only. (Default)
     - `oem=2`:   Legacy + LSTM engines.
     - `oem=3`:   Default, based on what is available.
-- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables 
+- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables. 
+    You can check the options with `tesseract --print-parameters`.
 
 # Returns
 - `Bool`: indicating whether execution was successful or not
@@ -180,7 +180,8 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
     - `oem=1`:   Neural nets LSTM engine only. (Default)
     - `oem=2`:   Legacy + LSTM engines.
     - `oem=3`:   Default, based on what is available.
-- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables
+- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables.
+    You can check the options with `tesseract --print-parameters`.
 
 # Returns
 - `String`: text extracted, or empty string in case an error occurs
@@ -209,7 +210,7 @@ function run_tesseract(
     FileIO.save(input_path, image)
 
     # Run Tesseract!
-    run_tesseract(input_path, output_path, lang=lang, psm=psm, oem=oem, kwargs...)
+    run_tesseract(input_path, output_path, lang=lang, psm=psm, oem=oem; kwargs...)
 
     # Read output into a string
     txt = ""
