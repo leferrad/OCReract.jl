@@ -46,8 +46,9 @@ function test_run_and_get_output()
 end
 
 function test_run_with_kwargs()
-    result_txt = run_tesseract(Images.load(TEST_ITEMS["noisy"]["path"]), enable_noise_removal=1)
-    @test strip(TEST_ITEMS["noisy"]["text"]) == strip(result_txt)
+    # Set an option that will make OCR bad for this image
+    result_txt = run_tesseract(Images.load(TEST_ITEMS["noisy"]["path"]), tessedit_pageseg_mode=7)
+    @test strip(TEST_ITEMS["noisy"]["text"]) != strip(result_txt)
 end
 
 function test_path_exist()
