@@ -9,7 +9,6 @@ ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
-SimpleMock = "a896ed2c-15a5-4479-b61d-a0e88e2a1d25"
 
 [compat]
 FileIO = "1"
@@ -18,7 +17,8 @@ Images = "0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
 julia = "1"
 
 [extras]
+SimpleMock = "a896ed2c-15a5-4479-b61d-a0e88e2a1d25"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Test"]
+test = ["SimpleMock", "Test"]
