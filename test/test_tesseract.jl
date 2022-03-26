@@ -1,5 +1,6 @@
 using Images
 using OCReract
+using SimpleMock
 using Test
 
 pkg_path = abspath(joinpath(dirname(pathof(OCReract)), ".."))
@@ -51,11 +52,10 @@ function test_run_with_kwargs()
     @test strip(TEST_ITEMS["noisy"]["text"]) != strip(result_txt)
 end
 
-function test_path_exist()
+function test_path_exists()
     res = run_tesseract("/tmp/not_existing_image.png", "/tmp/res")
     @test res == false
 end
-
 
 function test_bad_arguments()
     # Bad Language
@@ -70,15 +70,47 @@ function test_bad_arguments()
     @test res == true
 end
 
+function test_check_tesseract_installed_ok()
+    mock(
+        (read, Cmd) => Mock((cmd) -> nothing),
+    ) do mock_read
+        OCReract.check_tesseract_installed()
+        @test called_once(mock_read)
+    end
+end
+
+function test_check_tesseract_installed_logs_error()
+    mock(
+        (read, Cmd) => Mock((cmd) -> throw(Base.IOError("Check failed!"))),
+    ) do mock_read
+        @test_logs (
+            :error, "Tesseract is not properly installed. Command tesseract not recognized"
+        ) OCReract.check_tesseract_installed()
+        @test called_once(mock_read)
+    end
+end
+
+function test_get_tesseract_version()
+    version = OCReract.get_tesseract_version()
+    tesseract_string, version_string = split(version, " ")
+    @test tesseract_string == "tesseract"
+    @test occursin(r"^([1-9]\d*|0)(\.(([1-9]\d*)|0)){2}$", version_string)
+end
+
 @testset "RunTesseract" begin
     # Normal run
     test_run_tesseract()
     # Run and get
     test_run_and_get_output()
     # Test with non existent image
-    test_path_exist()
+    test_path_exists()
     # Test with bad arguments
     test_bad_arguments()
     # Test with kwargs
     test_run_with_kwargs()
+    # Test check of tesseract installed
+    test_check_tesseract_installed_ok()
+    test_check_tesseract_installed_logs_error()
+    # Test getting tesseract version
+    test_get_tesseract_version()
 end
