@@ -17,8 +17,9 @@ Images = "0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
 julia = "1"
 
 [extras]
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 SimpleMock = "a896ed2c-15a5-4479-b61d-a0e88e2a1d25"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["SimpleMock", "Test"]
+test = ["DelimitedFiles", "SimpleMock", "Test"]

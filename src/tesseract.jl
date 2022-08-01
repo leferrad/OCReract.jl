@@ -140,7 +140,7 @@ function run_tesseract(
 
     # NOTE: tesseract ALWAYS add a suffix ".txt" to the result
     # so, rename the resulting file to call it as the user defined
-    output_file = output_path*".txt"
+    output_file = output_path * ("tsv" ∈ extra_args ? ".tsv" : ".txt")
     try
         mv(output_file, output_path, force=true)
     catch e
