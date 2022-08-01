@@ -31,7 +31,7 @@ end
 @info "Using Tesseract version: $(get_tesseract_version())"
 
 """
-    run_tesseract(args...; kwargs...) -> Bool
+    run_tesseract(input_path, output_path, extra_args...; kwargs...) -> Bool
 
 Wrapper function to run Tesseract over a image stored in disk,
     and write the results in a given path.
@@ -40,6 +40,8 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
 # Arguments
 - `input_path::String`: Path to the image to be processed
 - `output_path::String`: Path to the text result to be written
+- `extra_args` (`String`s): Optional arguments to change the nature of the output
+  (e.g, [`"tsv"`](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html))
 
 # Keywords
 - `lang::Union{String, Nothing}` Language to be configured in Tesseract (optional).
@@ -64,7 +66,7 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
     - `oem=1`:   Neural nets LSTM engine only. (Default)
     - `oem=2`:   Legacy + LSTM engines.
     - `oem=3`:   Default, based on what is available.
-- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables. 
+- `kwargs`: Other key-value pairs to be sent to Tesseract command as "-c" config variables.
     You can check the options with `tesseract --print-parameters`.
 
 # Returns
@@ -81,7 +83,8 @@ julia> run_tesseract(img_path, out_path, psm=3, oem=1)
 """
 function run_tesseract(
     input_path::String,
-    output_path::String;
+    output_path::String,
+    extra_args::String...;
     lang::Union{String, Nothing}=nothing,
     psm::Integer=3,
     oem::Integer=1,
@@ -124,7 +127,7 @@ function run_tesseract(
     end
 
     # Join arguments to final command
-    cmd = join([cmd, "--oem $oem", "--psm $psm", config_vars], " ")
+    cmd = join([cmd, "--oem $oem", "--psm $psm", config_vars, extra_args...], " ")
     @debug "Running command '$cmd' ..."
 
     # Run command
@@ -149,13 +152,15 @@ function run_tesseract(
 end
 
 """
-    run_tesseract(args...; kwargs...) -> String
+    run_tesseract(image, extra_args...; kwargs...) -> String
 
 Function to run Tesseract over an image in memory, and get the results in a `String`.
 Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
 
 # Arguments
 - `image`: Image to be processed, in a format compatible with `Images` module.
+- `extra_args` (`String`s): Optional arguments to change the nature of the output
+  (e.g, [`"tsv"`](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html))
 
 # Keywords
 - `lang::Union{String, Nothing}` Language to be configured in Tesseract (optional)
@@ -197,7 +202,8 @@ julia> println(strip(res_text));
 ```
 """
 function run_tesseract(
-    image;
+    image::AbstractArray,
+    extra_args::String...;
     lang::Union{String, Nothing}=nothing,
     psm::Integer=3,
     oem::Integer=1,
@@ -210,7 +216,7 @@ function run_tesseract(
     FileIO.save(input_path, image)
 
     # Run Tesseract!
-    run_tesseract(input_path, output_path, lang=lang, psm=psm, oem=oem; kwargs...)
+    run_tesseract(input_path, output_path, extra_args...; lang=lang, psm=psm, oem=oem, kwargs...)
 
     # Read output into a string
     txt = ""
