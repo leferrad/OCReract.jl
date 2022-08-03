@@ -40,7 +40,7 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
 # Arguments
 - `input_path::String`: Path to the image to be processed
 - `output_path::String`: Path to the text result to be written
-- `extra_args` (`String`s): Optional arguments to change the nature of the output
+- `extra_args::String...`: Optional arguments to change the nature of the output
   (e.g, [`"tsv"`](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html))
 
 # Keywords
@@ -159,7 +159,7 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
 
 # Arguments
 - `image`: Image to be processed, in a format compatible with `Images` module.
-- `extra_args` (`String`s): Optional arguments to change the nature of the output
+- `extra_args::String...`: Optional arguments to change the nature of the output
   (e.g, [`"tsv"`](https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html))
 
 # Keywords
