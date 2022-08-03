@@ -34,7 +34,7 @@ julia> println(strip(res_text));
 
 ## Testing
 
-In a Julia session, run `Pkg.test("OCReract", coverage=true)`, or just run `julia --code-coverage=all --inline=no test/runtests.jl`.
+In a Julia session, run `Pkg.test("OCReract", coverage=true)`.
 
 ## Next steps
 - Develop a module for image pre-processing (to improve OCR results)
