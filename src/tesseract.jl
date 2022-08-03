@@ -138,7 +138,8 @@ function run_tesseract(
         return false
     end
 
-    # NOTE: tesseract adds a suffix ".txt" to the result (unless for a TSV result, where the suffix is ".tsv")
+    # NOTE: tesseract adds a suffix ".txt" to the result
+    #       (unless for a TSV result, where the suffix is ".tsv")
     # so, rename the resulting file to call it as the user defined
     output_file = output_path * ("tsv" ∈ extra_args ? ".tsv" : ".txt")
     try
@@ -216,7 +217,8 @@ function run_tesseract(
     FileIO.save(input_path, image)
 
     # Run Tesseract!
-    run_tesseract(input_path, output_path, extra_args...; lang=lang, psm=psm, oem=oem, kwargs...)
+    run_tesseract(input_path, output_path, extra_args...;
+        lang=lang, psm=psm, oem=oem, kwargs...)
 
     # Read output into a string
     txt = ""
