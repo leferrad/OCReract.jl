@@ -2,6 +2,7 @@ using Images
 using OCReract
 using SimpleMock
 using Test
+using DelimitedFiles
 
 pkg_path = abspath(joinpath(dirname(pathof(OCReract)), ".."))
 
@@ -50,6 +51,27 @@ function test_run_with_kwargs()
     # Set an option that will make OCR bad for this image
     result_txt = run_tesseract(Images.load(TEST_ITEMS["noisy"]["path"]), tessedit_pageseg_mode=7)
     @test strip(TEST_ITEMS["noisy"]["text"]) != strip(result_txt)
+end
+
+function test_tsv()
+    tmp_path = tempname()
+    mkdir(tmp_path)
+    path_to_res = joinpath(tmp_path, "res.tsv")
+    @test run_tesseract(TEST_ITEMS["simple"]["path"], path_to_res, "tsv"; psm=11 #= sparse =#, lang="eng")
+
+    table, header = readdlm(path_to_res, '\t'; header=true, quotes=false)
+    @test vec(header) == ["level", "page_num", "block_num", "par_num", "line_num",
+        "word_num", "left", "top", "width", "height", "conf", "text"]
+
+    idx = findfirst(==("quick"), table[:,end])
+    @test table[idx, end] == "quick"
+    @test table[idx, #= word_num =# 6] == 2            # the first time "quick" appears, it's the 2nd word on the line
+    @test table[idx, #= top =# 5] == table[idx-1, 5]   # aligned with previous word
+    idx = findnext(==("quick"), table[:,end], idx+1)
+    @test table[idx, #= word_num =# 6] == 4            # the second time "quick" appears, it's the 4th word on the line
+
+    result = run_tesseract(load(TEST_ITEMS["simple"]["path"]), path_to_res, "tsv"; psm=11 #= sparse =#, lang="eng")
+    @test result == read(path_to_res, String)
 end
 
 function test_path_exists()
@@ -102,6 +124,7 @@ end
     test_run_tesseract()
     # Run and get
     test_run_and_get_output()
+    test_tsv()    # with TSV outputs
     # Test with non existent image
     test_path_exists()
     # Test with bad arguments
