@@ -60,7 +60,8 @@ function test_tsv()
     @test run_tesseract(TEST_ITEMS["simple"]["path"], path_to_res, "tsv"; psm=11 #= sparse =#, lang="eng")
 
     table, header = readdlm(path_to_res, '\t'; header=true, quotes=false)
-    @test header == ["level"  "page_num"  "block_num"  "par_num"  "line_num"  "word_num"  "left"  "top"  "width"  "height"  "conf"  "text"]
+    @test vec(header) == ["level", "page_num", "block_num", "par_num", "line_num",
+        "word_num", "left", "top", "width", "height", "conf", "text"]
 
     idx = findfirst(==("quick"), table[:,end])
     @test table[idx, end] == "quick"
