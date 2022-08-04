@@ -1,5 +1,5 @@
 using FileIO
-using Images
+using ImageCore
 using Logging
 
 export
@@ -197,7 +197,7 @@ Errors / Warnings are reported through `Logging`, so no exceptions are thrown.
 julia> using Images;
 julia> using OCReract;
 julia> img_path = "/path/to/img.png";
-julia> img = Images.load(img_path);
+julia> img = load(img_path);
 julia> res_text = run_tesseract(img, psm=3, oem=1);
 julia> println(strip(res_text));
 ```
