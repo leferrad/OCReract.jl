@@ -7,7 +7,15 @@ OCReract is a simple Julia wrapper of the well-known OCR engine called [Tesserac
 
 ## Installation
 
-It can be installed using the Julia package manager. From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+The Tesseract OCR engine must be installed manually. On ubuntu, this may be as simple as
+
+```
+$ sudo apt-get install -y tesseract-ocr
+```
+
+but the [installation instructions](https://tesseract-ocr.github.io/tessdoc/Installation.html) are the authoritative source.
+
+The Julia wrapper can be installed using the Julia package manager. From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
 ```julia-repl
 pkg> add OCReract
 ```
