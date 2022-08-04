@@ -41,13 +41,13 @@ julia> read(`cat $res_path`, String)
 
 #### In memory
 
-`OCReract` uses [JuliaImages](https://juliaimages.org/latest/) module to process images in memory. So, the image should be loaded with `Images` module to then execute `run_tesseract` to retrieve the result as a `String`.
+`OCReract` uses [JuliaImages](https://juliaimages.org/latest/) module to process images in memory. So, the image should be loaded with `Images` module (or the lighter-weight combination `using ImageCore, FileIO`) to then execute `run_tesseract` to retrieve the result as a `String`.
 
 ```julia-repl
 julia> using Images
 julia> using OCReract
 julia> img_path = "https://raw.githubusercontent.com/leferrad/OCReract.jl/master/test/files/noisy.png";
-julia> img = Images.load(img_path);
+julia> img = load(img_path);
 julia> res_text = run_tesseract(img);
 julia> println(strip(res_text))
 Noisy image

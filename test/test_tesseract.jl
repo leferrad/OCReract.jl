@@ -1,4 +1,5 @@
-using Images
+using ImageCore
+using FileIO
 using OCReract
 using SimpleMock
 using Test
@@ -43,13 +44,13 @@ function test_run_tesseract()
 end
 
 function test_run_and_get_output()
-    result_txt = run_tesseract(Images.load(TEST_ITEMS["simple"]["path"]))
+    result_txt = run_tesseract(load(TEST_ITEMS["simple"]["path"]))
     @test strip(TEST_ITEMS["simple"]["text"]) == strip(result_txt)
 end
 
 function test_run_with_kwargs()
     # Set an option that will make OCR bad for this image
-    result_txt = run_tesseract(Images.load(TEST_ITEMS["noisy"]["path"]), tessedit_pageseg_mode=7)
+    result_txt = run_tesseract(load(TEST_ITEMS["noisy"]["path"]), tessedit_pageseg_mode=7)
     @test strip(TEST_ITEMS["noisy"]["text"]) != strip(result_txt)
 end
 

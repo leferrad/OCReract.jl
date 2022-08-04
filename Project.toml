@@ -5,15 +5,15 @@ version = "1.2.0"
 
 [deps]
 FileIO = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-ImageMagick = "6218d12a-5da1-5696-b52f-db25d2ecc6d1"
-Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
+ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
+ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [compat]
 FileIO = "1"
-ImageMagick = "0.7, 1.0, 1.1, 1.2"
-Images = "0.18, 0.19, 0.20, 0.21, 0.22, 0.23, 0.24, 0.25"
+ImageCore = "0.8, 0.9"
+ImageIO = "0.6"
 julia = "1"
 
 [extras]
