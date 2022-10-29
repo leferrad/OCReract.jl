@@ -14,8 +14,6 @@ From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
 pkg> add OCReract
 ```
 
-This is just a wrapper, so it assumes you already have installed [Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html).
-
 ## Usage
 
 This is a simple example of usage. For more details check the [Documentation](https://leferrad.github.io/OCReract.jl/dev).
