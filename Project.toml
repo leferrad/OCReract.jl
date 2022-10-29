@@ -9,6 +9,7 @@ ImageCore = "a09fc81d-aa75-5fe9-8630-4744c3626534"
 ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Tesseract_jll = "efd95c89-babc-5260-8753-618084eaf9d7"
 
 [compat]
 FileIO = "1"
