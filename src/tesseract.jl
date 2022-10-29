@@ -1,6 +1,7 @@
 using FileIO
 using ImageCore
 using Logging
+using Tesseract_jll
 
 export
     run_tesseract
@@ -10,7 +11,11 @@ command = "tesseract"
 psm_valid_range = 0:14
 oem_valid_range = 0:4
 
+# TODO: download data if needed through download command
+# TODO: set TESSDATA_PREFIX with tessdata
+
 """Util to check and inform whether Tesseract is installed or not"""
+# TODO: refactor
 function check_tesseract_installed()
     try
         read(`$command --version`, String);
@@ -22,6 +27,7 @@ end
 check_tesseract_installed()
 
 """Util to get version of Tesseract installed"""
+# TODO: refactor
 function get_tesseract_version()
     info = read(`$command --version`, String)
     version = split(info, "\n")[1]
@@ -113,26 +119,31 @@ function run_tesseract(
     end
 
     # Build command to execute
-    cmd = "tesseract $input_path $output_path"
+    call_tesseract(args...) = run(`$(tesseract()) $args`)
+
+    # First arguments are input and output files
+    args = [input_path, output_path]
 
     # Add language if specified
     if lang !== nothing
-        cmd = join([cmd, "-l $lang"], " ")
+        args = vcat(args, ["-l", lang])
     end
 
     # Add config variables from kwargs
     config_vars = ""
     for (k, v) in kwargs
-        config_vars *= "-c $k=$v "
+        args = vcat(args, ["-c", "$k=$v"])
     end
 
-    # Join arguments to final command
-    cmd = join([cmd, "--oem $oem", "--psm $psm", config_vars, extra_args...], " ")
-    @debug "Running command '$cmd' ..."
+    # Add the rest of the arguments
+    args = vcat(args, ["--oem", oem, "--psm", psm])
+    args = vcat(args, extra_args)
+
+    @debug "Running tesseract with arguments $args ..."
 
     # Run command
     try
-        run(`$(split(cmd))`)
+        call_tesseract(args...)
     catch e
         @error "Error ocurred while running Tesseract! $e"
         return false
