@@ -10,12 +10,13 @@ OCReract is a simple Julia wrapper of the well-known OCR engine called [Tesserac
 The Tesseract OCR engine must be installed manually. On ubuntu, this may be as simple as
 
 ```
-$ sudo apt-get install -y tesseract-ocr
+sudo apt-get install -y tesseract-ocr
 ```
 
 but the [installation instructions](https://tesseract-ocr.github.io/tessdoc/Installation.html) are the authoritative source.
 
 The Julia wrapper can be installed using the Julia package manager. From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+
 ```julia-repl
 pkg> add OCReract
 ```
@@ -26,7 +27,7 @@ In this simple example, we will process the following image through the two opti
 
 ![Test Image](https://raw.githubusercontent.com/leferrad/OCReract.jl/master/test/files/noisy.png)
 
-#### In disk
+### In disk
 
 Let's execute `run_tesseract` to process the image from repository's test folder, and then `cat` the resulting text file.
 
@@ -39,7 +40,7 @@ julia> read(`cat $res_path`, String)
 "Noisy image\nto test\nOCReract.jl\n\f"
 ```
 
-#### In memory
+### In memory
 
 `OCReract` uses [JuliaImages](https://juliaimages.org/latest/) module to process images in memory. So, the image should be loaded with `Images` module (or the lighter-weight combination `using ImageCore, FileIO`) to then execute `run_tesseract` to retrieve the result as a `String`.
 
@@ -59,6 +60,10 @@ OCReract.jl
 ## API Reference
 
 ```@index
+```
+
+```@docs
+OCReract.OCReract
 ```
 
 ```@autodocs
