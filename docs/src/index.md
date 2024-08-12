@@ -64,6 +64,8 @@ OCReract.jl
 
 ```@docs
 OCReract.OCReract
+OCReract.check_tesseract_installed
+OCReract.get_tesseract_version
 ```
 
 ```@autodocs
