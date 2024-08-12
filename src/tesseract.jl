@@ -3,14 +3,27 @@ using ImageCore
 using Logging
 
 export
-    run_tesseract
+    run_tesseract,
+    get_tesseract_version,
+    check_tesseract_installed
 
 # Tesseract settings
 command = "tesseract"
 psm_valid_range = 0:14
 oem_valid_range = 0:4
 
-"""Util to check and inform whether Tesseract is installed or not"""
+"""
+  check_tesseract_installed()
+
+This function checks if Tesseract is installed in the system by running the command
+`$command --version`. If the command is not recognized, an error is logged.
+
+# Examples
+```julia-repl
+julia> using OCReract;
+julia> check_tesseract_installed()
+```
+"""
 function check_tesseract_installed()
     try
         read(`$command --version`, String);
@@ -21,7 +34,21 @@ end
 
 check_tesseract_installed()
 
-"""Util to get version of Tesseract installed"""
+"""
+    get_tesseract_version() -> String
+
+Function to get the version of Tesseract installed in the system.
+The version is extracted from the first line of the output of the command `$command --version`.
+
+# Returns
+- `String`: version of Tesseract installed
+
+# Examples
+```julia-repl
+julia> using OCReract;
+julia> get_tesseract_version()
+```
+"""
 function get_tesseract_version()
     info = read(`$command --version`, String)
     version = split(info, "\n")[1]

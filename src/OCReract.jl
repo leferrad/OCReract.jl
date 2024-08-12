@@ -1,7 +1,9 @@
 module OCReract
 
 export
-    run_tesseract
+    run_tesseract,
+    get_tesseract_version,
+    check_tesseract_installed
 
 include("tesseract.jl")
 

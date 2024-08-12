@@ -116,6 +116,13 @@ end
 function test_get_tesseract_version()
     version = OCReract.get_tesseract_version()
     tesseract_string, version_string = split(version, " ")
+    # Remove v from version string if it exists
+    if tesseract_string == "tesseract" && version_string[1] == 'v'
+        version_string = version_string[2:end]
+    end
+    # Use only the version number (major.minor.patch)
+    version_string = split(version_string, ".")[1:3]
+    version_string = join(version_string, ".")
     @test tesseract_string == "tesseract"
     @test occursin(r"^([1-9]\d*|0)(\.(([1-9]\d*)|0)){2}$", version_string)
 end

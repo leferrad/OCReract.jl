@@ -10,11 +10,12 @@
 ## Installation
 
 From the Julia REPL, type `]` to enter the Pkg REPL mode and run:
+
 ```julia-repl
 pkg> add OCReract
 ```
 
-This is just a wrapper, so it assumes you already have installed [Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html).
+This is just a wrapper, so it assumes you already have installed [Tesseract](https://tesseract-ocr.github.io/tessdoc/Installation.html). Also, be sure the binary `tesseract` is in your PATH (you can check this by running `tesseract --version` in your terminal).
 
 ## Usage
 
@@ -37,4 +38,5 @@ julia> println(strip(res_text));
 In a Julia session, run `Pkg.test("OCReract", coverage=true)`.
 
 ## Next steps
+
 - Develop a module for image pre-processing (to improve OCR results)
