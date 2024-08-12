@@ -3,7 +3,9 @@ using ImageCore
 using Logging
 
 export
-    run_tesseract
+    run_tesseract,
+    get_tesseract_version,
+    check_tesseract_installed
 
 # Tesseract settings
 command = "tesseract"
